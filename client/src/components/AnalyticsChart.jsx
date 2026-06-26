@@ -11,7 +11,7 @@ export default function AnalyticsCharts({ token }) {
     const fetchAnalytics = async () => {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const res = await axios.get(`http://localhost:5000/api/analytics/${period}`, config);
+        const res = await axios.get(`https://to-do-dmhr.onrender.com/api/analytics/${period}`, config);
         setData(res.data);
       } catch (err) { console.error(err); }
     };

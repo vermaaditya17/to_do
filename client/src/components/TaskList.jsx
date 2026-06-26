@@ -17,7 +17,7 @@ export default function TaskList({ token }) {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/tasks', config);
+      const res = await axios.get('https://to-do-dmhr.onrender.com/api/tasks', config);
       setTasks(res.data);
       calculateStreak(res.data);
     } catch (err) { console.error(err); }
