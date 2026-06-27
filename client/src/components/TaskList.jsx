@@ -48,19 +48,38 @@ export default function TaskList({ token }) {
     setSubtasksList([...subtasksList, { text: currentSubtask.trim(), isDone: false }]);
     setCurrentSubtask('');
   };
+const handleAddTask = async (e) => {
+  e.preventDefault();
+  
+  
+  if (!newTitle.trim()) return;
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
-    await axios.post('http://localhost:5000/api/tasks', { title: newTitle, checklist: subtasksList }, config);
+  try {
+    
+    const activeToken = token || localStorage.getItem('token');
+    const requestConfig = { 
+      headers: { Authorization: `Bearer ${activeToken}` } 
+    };
+
+    const payload = { 
+      title: newTitle.trim(), 
+      checklist: subtasksList.length > 0 ? subtasksList : [] 
+    };
+
+    await axios.post('http://localhost:5000/api/tasks', payload, requestConfig);
+    
     setNewTitle('');
     setSubtasksList([]);
     fetchTasks();
     setRefreshAnalytics(p => p + 1);
-  };
+  } catch (err) {
+    console.error("Task Add Error Details:", err.response?.data || err.message);
+    alert(err.response?.data?.message || "Failed to create task blueprint. Check server console.");
+  }
+};
 
   const toggleTask = async (id, currentStatus) => {
-    await axios.put(`http://localhost:5000/api/tasks/${id}`, { isCompleted: !currentStatus }, config);
+    await axios.put(`https://to-do-dmhr.onrender.com/api/tasks/${id}`, { isCompleted: !currentStatus }, config);
     fetchTasks();
     setRefreshAnalytics(p => p + 1);
   };
@@ -69,12 +88,12 @@ export default function TaskList({ token }) {
     const task = tasks.find(t => t._id === taskId);
     const updatedChecklist = [...task.checklist];
     updatedChecklist[subtaskIndex].isDone = !updatedChecklist[subtaskIndex].isDone;
-    await axios.put(`http://localhost:5000/api/tasks/${taskId}`, { checklist: updatedChecklist }, config);
+    await axios.put(`https://to-do-dmhr.onrender.com/api/tasks/${taskId}`, { checklist: updatedChecklist }, config);
     fetchTasks();
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`, config);
+    await axios.delete(`https://to-do-dmhr.onrender.com/api/tasks/${id}`, config);
     fetchTasks();
     setRefreshAnalytics(p => p + 1);
   };
