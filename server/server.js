@@ -17,8 +17,21 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://to-do-umber-chi.vercel.app/'
+
+]
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // बिना ओरिजिन वाली रिक्वेस्ट्स (जैसे Postman या मोबाइल ऐप्स) को अलाउ करने के लिए !origin
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS Policy: This origin is not allowed by live server.'));
+    }
+  },
   credentials: true
 }));
 
