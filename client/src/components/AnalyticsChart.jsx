@@ -13,7 +13,7 @@ export default function AnalyticsCharts({ token }) {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const res = await axios.get(`https://to-do-dmhr.onrender.com/api/analytics/${period}`, config);
         setData(res.data);
-      } catch (err) { console.error(err); }
+      } catch (err) { console.log(err.message); }
     };
     if (token) fetchAnalytics();
   }, [period, token]);
